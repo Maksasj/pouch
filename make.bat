@@ -2,4 +2,4 @@
 
 cmake --build build
 
-build\examples\example_usage
+build\examples\example_2
