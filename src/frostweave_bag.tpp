@@ -1,5 +1,5 @@
-#ifndef _FROSTWEAVE_BAG_H_
-#define _FROSTWEAVE_BAG_H_
+#ifndef _POUCH_FROSTWEAVE_BAG_H_
+#define _POUCH_FROSTWEAVE_BAG_H_
 
 #include <functional>
 #include <optional>
