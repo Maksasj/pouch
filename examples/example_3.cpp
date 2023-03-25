@@ -6,7 +6,7 @@
 int main () {
     using namespace pouch;
 
-    HoleyPouchCompact<int, 100, 1> stack;
+    HoleyPouch<int, 100> stack;
 
     std::cout << stack.size() << "\n";
     

@@ -5,6 +5,9 @@
 #include <optional>
 #include <memory>
 
+#define _POUCH_FROSTWEAVEBAG_MAX_LOAD_FACTOR 0.99
+#define _POUCH_FROSTWEAVEBAG_MIN_LOAD_FACTOR 0.4
+
 namespace pouch {
     template<class _K, class _V>
     class FrostWeaveBag {
@@ -26,7 +29,7 @@ namespace pouch {
 
                     friend class FrostWeaveBag;
             };
-            
+
             u32 _bagSize;
             Pocket** _data;
 
@@ -35,7 +38,6 @@ namespace pouch {
             inline u32 hash(const _K& hashable, const u32& bounderie) const noexcept;
             inline void _put(const _K& key, const _V& value) noexcept;
             inline void rehash(const u32& newSize) noexcept;
-
         public:
             FrostWeaveBag(const u32& bucket_size);
             ~FrostWeaveBag();
@@ -46,6 +48,7 @@ namespace pouch {
 
             inline f32 load_factor() noexcept;
             inline f32 max_load_factor() noexcept;
+            inline f32 min_load_factor() noexcept;
             inline u64 size() const noexcept;
     };
 }
@@ -200,6 +203,10 @@ namespace pouch {
             prev = current;
             current = current->_next;
         }
+
+        if(_bagSize > 20 && (load_factor() < min_load_factor())) {
+            rehash(_bagSize / 2);
+        }
     }
 
     template<class _K, class _V>
@@ -209,7 +216,12 @@ namespace pouch {
 
     template<class _K, class _V>
     inline f32 FrostWeaveBag<_K, _V>::max_load_factor() noexcept {
-        return 0.99;
+        return _POUCH_FROSTWEAVEBAG_MAX_LOAD_FACTOR;
+    }
+
+    template<class _K, class _V>
+    inline f32 FrostWeaveBag<_K, _V>::min_load_factor() noexcept {
+        return _POUCH_FROSTWEAVEBAG_MIN_LOAD_FACTOR;
     }
 
     template<class _K, class _V>
