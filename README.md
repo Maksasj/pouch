@@ -2,9 +2,9 @@
 
 Pouch - simple c++ library that introduces some containers, primary HashMap and stack style dynamic array. 
 
-HashMap uses classical approach with array of linked lists, but there is also used rehashing technique to gain performance **(note that FrostWeaveBag, have almost O(n^2) space complexity)**.
+HashMap uses classical approach with array of linked lists, but there is also used rehashing technique to gain performance **(note that FrostWeaveBag, have almost O(n*2) space complexity)**.
 
-On the another hand there is HoleyPouch that works similary with C++ **std::vector**, and it have two implementations one aimed for speed, HoleyPouch (space complexity O(n^2)) it self, as well as HoleyPouchCompact that main idea is a best space complexity O(n). 
+On the another hand there is HoleyPouch that works similary with C++ **std::vector**, and it have two implementations one aimed for speed, HoleyPouch (space complexity O(n*2)), as well as HoleyPouchCompact which main idea is a best space complexity O(n). 
 
 **Library was created only for studing purposes.**
 
