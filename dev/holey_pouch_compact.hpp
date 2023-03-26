@@ -1,7 +1,7 @@
 #ifndef _POUCH_HOLEY_POUCH_COMPACT_
 #define _POUCH_HOLEY_POUCH_COMPACT_
 
-#include "holey_pouch.tpp"
+#include "holey_pouch.hpp"
 
 namespace pouch {
     template<class _T, unsigned long long __maxSize = 100, unsigned long long __expandSize = 5>
