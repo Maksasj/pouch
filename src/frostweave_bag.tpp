@@ -59,6 +59,7 @@ namespace pouch {
 namespace pouch {
     using u64 = unsigned long long;
     using u32 = unsigned long;
+    using i32 = signed long;
     using f32 = float;
 
     /* Private */
