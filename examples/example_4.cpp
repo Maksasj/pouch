@@ -12,13 +12,15 @@ int main () {
         container.put(i);
 
     for(int i = 0; i < 1000; ++i)
-        std::cout << container.get(i)->_value << "\n";
+        std::cout << *container.get(i) << "\n";
 
     for(int i = 0; i < 1000; ++i)
         container.erase(i);
 
-    for(int i = 0; i < 1000; ++i)
-        std::cout << container.get(i) << "\n";
+    for(int i = 0; i < 1000; ++i) {
+        void* a = container.get(i);
+        std::cout << a << "\n";
+    }
 
     return 0;
 }
