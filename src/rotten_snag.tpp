@@ -1,6 +1,8 @@
 #ifndef _ROTTEN_SNAG_POUCH_H_
 #define _ROTTEN_SNAG_POUCH_H_
 
+#include <functional>
+
 namespace pouch {
     using u64 = unsigned long long;
     using u32 = unsigned long;
@@ -10,6 +12,8 @@ namespace pouch {
     template<typename T>
     class RottenSnag {
         private:
+            using ComparisonLambda = std::function<bool(const T&, const T&)>;
+
             struct Stick {
                 T _value;
                 i32 _height;
@@ -23,6 +27,8 @@ namespace pouch {
             
             u64 _size;
             Stick* _root;
+            const ComparisonLambda _lambda;
+            const ComparisonLambda _equalLambda;
             
             inline i32 iternal_height(Stick* stick) const noexcept;
             inline i32 iternal_balance_factor(Stick* stick) const noexcept;
@@ -39,7 +45,7 @@ namespace pouch {
             inline Stick* iternal_erase(Stick* stick, const T& value) noexcept;
             
         public:
-            RottenSnag();
+            RottenSnag(const ComparisonLambda& lambda = [](const T& a, const T& b) { return a < b; }, const ComparisonLambda& equalLambda = [](const T& a, const T& b) { return a == b; });
             ~RottenSnag();
 
             inline T* get(const T& value) const noexcept;
@@ -133,12 +139,12 @@ namespace pouch {
     
     template<typename T>
     inline typename RottenSnag<T>::Stick* RottenSnag<T>::iternal_put(Stick* stick, const T& value) noexcept {
-        if (!stick) {
+        if (stick == nullptr) {
             ++_size;
             return new Stick(value);
         }
-
-        if (value < stick->_value)
+            
+        if (_lambda(value, stick->_value))
             stick->_left = iternal_put(stick->_left, value);
         else
             stick->_right = iternal_put(stick->_right, value);
@@ -164,11 +170,7 @@ namespace pouch {
     inline typename RottenSnag<T>::Stick* RottenSnag<T>::iternal_erase(Stick* stick, const T& value) noexcept {
         if (!stick) return nullptr;
 
-        if (value < stick->_value)
-            stick->_left = iternal_erase(stick->_left, value);
-        else if (value > stick->_value)
-            stick->_right = iternal_erase(stick->_right, value);
-        else {
+        if(_equalLambda(value, stick->_value)) {
             Stick* left = stick->_left;
             Stick* right = stick->_right;
 
@@ -183,13 +185,17 @@ namespace pouch {
             min->_left = left;
         
             return iternal_balance(min);
-        }
+        } else if(_lambda(value, stick->_value))
+            stick->_left = iternal_erase(stick->_left, value);
+        else
+            stick->_right = iternal_erase(stick->_right, value);
 
         return iternal_balance(stick);
     }
 
     template<typename T>
-    inline RottenSnag<T>::RottenSnag() : _root(nullptr) {}
+    inline RottenSnag<T>::RottenSnag(const ComparisonLambda& lambda, const ComparisonLambda& equalLambda) 
+        : _root(nullptr), _lambda(lambda), _equalLambda(equalLambda) {}
 
     template<typename T>
     inline RottenSnag<T>::~RottenSnag() {
@@ -205,9 +211,9 @@ namespace pouch {
         Stick* currentStick = _root;
         
         while (currentStick != nullptr) {
-            if (value == currentStick->_value)
+            if (_equalLambda(value, currentStick->_value))
                 return &currentStick->_value;
-            else if (value < currentStick->_value)
+            else if (_lambda(value, currentStick->_value))
                 currentStick = currentStick->_left;
             else
                 currentStick = currentStick->_right;
