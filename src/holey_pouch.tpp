@@ -91,14 +91,14 @@ namespace pouch {
 
     template<class _T, unsigned long long __maxSize>
     inline _T& HoleyPouch<_T, __maxSize>::get(const u64& index) const {
-        if(index >= _size) throw std::out_of_range("holey pouch pop_top out of range");
+        if(index >= _size) throw std::out_of_range("holey pouch get out of range");
 
         return _data[_size - index - 1];
     }
 
     template<class _T, unsigned long long __maxSize>
     inline void HoleyPouch<_T, __maxSize>::set(const u64& index, const _T& value) {
-        if(index >= _size) throw std::out_of_range("holey pouch pop_top out of range");
+        if(index >= _size) throw std::out_of_range("holey pouch set out of range");
         _data[_size - index - 1] = value;
     }
 
