@@ -12,4 +12,6 @@
 /* Space implementations*/
 #include "holey_pouch_compact.tpp"
 
+#include "rotten_snag.tpp"
+
 #endif
