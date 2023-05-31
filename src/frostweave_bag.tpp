@@ -2,7 +2,6 @@
 #define _POUCH_FROSTWEAVE_BAG_H_
 
 #include <functional>
-#include <optional>
 #include <memory>
 
 #define _POUCH_FROSTWEAVEBAG_MAX_LOAD_FACTOR_ 0.99
