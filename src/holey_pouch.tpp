@@ -17,11 +17,15 @@ namespace pouch {
             inline void _resize(const u64& newCapacity) noexcept;
         public:
             HoleyPouch();
+            HoleyPouch(const size_t& size);
+            HoleyPouch(const size_t& size, const _T& fill);
             ~HoleyPouch();
 
             inline void push_on_top(const _T& value) noexcept;
             inline _T& get_on_top();
             inline void pop_top();
+
+            inline void insert(const u64& index, const _T& value) noexcept;
 
             inline _T& get(const u64& index) const;
             inline void set(const u64& index, const _T& value);
@@ -61,16 +65,49 @@ namespace pouch {
     }
 
     template<class _T, unsigned long long __maxSize>
+    HoleyPouch<_T, __maxSize>::HoleyPouch(const size_t& size) : _maxSize(__maxSize) {
+        _data = new _T[size + 1];
+        _capacity = size + 1;
+        _size = size;
+    }
+
+    template<class _T, unsigned long long __maxSize>
+    HoleyPouch<_T, __maxSize>::HoleyPouch(const size_t& size, const _T& fill) : _maxSize(__maxSize) {
+        _data = new _T[size + 1];
+
+        for(size_t i = 0; i < size; ++i) {
+            _data[i] = fill;
+        }
+
+        _capacity = size + 1;
+        _size = size;
+    }
+
+    template<class _T, unsigned long long __maxSize>
     HoleyPouch<_T, __maxSize>::~HoleyPouch() {
         delete [] _data;
     }
 
     template<class _T, unsigned long long __maxSize>
     inline void HoleyPouch<_T, __maxSize>::push_on_top(const _T& value) noexcept {
-        if(_size == _capacity)
+        if(_size >= _capacity)
             _resize(_capacity * 2);
 
         _data[_size] = value;
+        ++_size;
+    }
+
+    template<class _T, unsigned long long __maxSize>
+    inline void HoleyPouch<_T, __maxSize>::insert(const u64& index, const _T& value) noexcept {
+        if(_size >= _capacity)
+            _resize(_capacity * 2);
+
+        for(u64 i = _size - index; i < _size; ++i) {
+            _data[i + 1] = _data[i];
+        }
+
+        _data[_size - index] = value;
+
         ++_size;
     }
 

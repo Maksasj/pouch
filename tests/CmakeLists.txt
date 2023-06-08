@@ -6,5 +6,6 @@ include_directories("../src")
 include_directories("./")
 
 add_subdirectory(frostweave_bag)
+add_subdirectory(holey_pouch)
 
 enable_testing()
