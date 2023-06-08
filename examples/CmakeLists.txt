@@ -15,5 +15,8 @@ target_link_libraries(example_3 pouch)
 add_executable(example_4 example_4.cpp)
 target_link_libraries(example_4 pouch)
 
+add_executable(example_5 example_5.cpp)
+target_link_libraries(example_5 pouch)
+
 add_executable(example example.cpp)
 target_link_libraries(example pouch)

@@ -1,6 +1,10 @@
 add_executable(frostweave_bag_test frostweave_bag_test.cpp)
 target_link_libraries(frostweave_bag_test pouch)
 
+add_executable(frostweave_bag_alex_test frostweave_bag_alex_test.cpp)
+target_link_libraries(frostweave_bag_alex_test pouch)
+
 enable_testing()
 
 add_test(NAME Pouch_FrostweaveBag COMMAND $<TARGET_FILE:frostweave_bag_test>)
+add_test(NAME Pouch_FrostweaveBagAlex COMMAND $<TARGET_FILE:frostweave_bag_alex_test>)

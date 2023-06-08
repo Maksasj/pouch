@@ -45,6 +45,7 @@ namespace pouch {
 
             inline void put(const _K& key, const _V& value) noexcept;
             inline _V* get(const _K& key) const noexcept;
+            inline bool has(const _K& key) const noexcept;
             inline void erase(const _K& key) noexcept;
 
             inline f32 load_factor() noexcept;
@@ -89,6 +90,9 @@ namespace pouch {
         if(_data[hashKey] == nullptr) {
             _data[hashKey] = new Pocket(key , value);
             ++_size;
+            return;
+        } else if(_data[hashKey]->_key == key) {
+            _data[hashKey]->_value = value;
             return;
         }
 
@@ -182,6 +186,27 @@ namespace pouch {
         }
         
         return &current->_value;
+    }
+
+    template<class _K, class _V>
+    inline bool FrostWeaveBag<_K, _V>::has(const _K& key) const noexcept {
+        u32 hashKey = hash(key, _bagSize);
+
+        if(_data[hashKey] == nullptr) {
+            return false;
+        }
+
+        Pocket* current = _data[hashKey];
+
+        while (current->_key != key) {
+            if(current->_next == nullptr) {
+                return false;
+            }
+
+            current = current->_next;
+        }
+        
+        return true;
     }
 
     template<class _K, class _V>
