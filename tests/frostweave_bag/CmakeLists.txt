@@ -1,0 +1,6 @@
+add_executable(frostweave_bag_test frostweave_bag_test.cpp)
+target_link_libraries(frostweave_bag_test pouch)
+
+enable_testing()
+
+add_test(NAME Pouch_FrostweaveBag COMMAND $<TARGET_FILE:frostweave_bag_test>)

@@ -44,7 +44,7 @@ namespace pouch {
             ~FrostWeaveBag();
 
             inline void put(const _K& key, const _V& value) noexcept;
-            inline std::optional<std::reference_wrapper<_V>> get(const _K& key) const noexcept;
+            inline _V* get(const _K& key) const noexcept;
             inline void erase(const _K& key) noexcept;
 
             inline f32 load_factor() noexcept;
@@ -58,7 +58,6 @@ namespace pouch {
 namespace pouch {
     using u64 = unsigned long long;
     using u32 = unsigned long;
-    using i32 = signed long;
     using f32 = float;
 
     /* Private */
@@ -134,7 +133,7 @@ namespace pouch {
 
     /* Public */
     template<class _K, class _V>
-    FrostWeaveBag<_K, _V>::FrostWeaveBag(const u32& bucket_size) : _size(0) , _bagSize(bucket_size) {
+    FrostWeaveBag<_K, _V>::FrostWeaveBag(const u32& bucket_size) : _bagSize(bucket_size), _size(0) {
         _data = new Pocket*[bucket_size];
         
         for(u32 i = 0; i < _bagSize; ++i)
@@ -142,7 +141,7 @@ namespace pouch {
     }
 
     template<class _K, class _V>
-    FrostWeaveBag<_K, _V>::FrostWeaveBag() : _size(0) , _bagSize(_POUCH_FROSTWEAVEBAG_DEFAULT_BUCKET_SIZE_) {
+    FrostWeaveBag<_K, _V>::FrostWeaveBag() : _bagSize(_POUCH_FROSTWEAVEBAG_DEFAULT_BUCKET_SIZE_), _size(0) {
         _data = new Pocket*[_POUCH_FROSTWEAVEBAG_DEFAULT_BUCKET_SIZE_];
         
         for(u32 i = 0; i < _bagSize; ++i)
@@ -165,24 +164,24 @@ namespace pouch {
     }
 
     template<class _K, class _V>
-    inline std::optional<std::reference_wrapper<_V>> FrostWeaveBag<_K, _V>::get(const _K& key) const noexcept {
+    inline _V* FrostWeaveBag<_K, _V>::get(const _K& key) const noexcept {
         u32 hashKey = hash(key, _bagSize);
 
         if(_data[hashKey] == nullptr) {
-            return std::nullopt;
+            return nullptr;
         }
 
         Pocket* current = _data[hashKey];
 
         while (current->_key != key) {
             if(current->_next == nullptr) {
-                return std::nullopt;
+                return nullptr;
             }
 
             current = current->_next;
         }
         
-        return std::optional<std::reference_wrapper<_V>>{current->_value};
+        return &current->_value;
     }
 
     template<class _K, class _V>

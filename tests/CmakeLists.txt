@@ -1,0 +1,10 @@
+
+project(PouchTests)
+cmake_minimum_required(VERSION 3.0)
+
+include_directories("../src")
+include_directories("./")
+
+add_subdirectory(frostweave_bag)
+
+enable_testing()

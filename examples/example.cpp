@@ -15,8 +15,8 @@ int main () {
 
         cout << dictionary.size() << "\n"; // '2'
         
-        auto e = dictionary.get(9).value(); // Note .get() returns optional type 
-        cout << e << "\n"; // '1'
+        auto e = dictionary.get(9); // Note .get() returns optional type 
+        cout << *e << "\n"; // '1'
         
         dictionary.erase(1); // Erase by key
     }

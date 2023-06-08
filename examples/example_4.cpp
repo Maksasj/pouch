@@ -18,8 +18,8 @@ int main () {
         container.erase(i);
 
     for(int i = 0; i < 1000; ++i) {
-        void* a = container.get(i);
-        std::cout << a << "\n";
+        int* a = container.get(i);
+        std::cout << *a << "\n";
     }
 
     return 0;

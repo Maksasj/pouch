@@ -41,10 +41,8 @@ int main () {
         for(const auto &c : data) {
             auto p = container.get(c);
 
-            if(p.has_value()) {
-                if(c != p.value()) {
-                    std::cout << "WTF !\n";
-                }
+            if(p == nullptr) {
+                std::cout << "WTF !\n";
             } else {
                 std::cout << "wtf";
             }
