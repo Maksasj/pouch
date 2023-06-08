@@ -1,0 +1,10 @@
+add_executable(holey_pouch_compact_test holey_pouch_compact_test.cpp)
+target_link_libraries(holey_pouch_compact_test pouch)
+
+add_executable(holey_pouch_compact_alex_test holey_pouch_compact_alex_test.cpp)
+target_link_libraries(holey_pouch_compact_alex_test pouch)
+
+enable_testing()
+
+add_test(NAME Pouch_HoleyPouchCompact COMMAND $<TARGET_FILE:holey_pouch_compact_test>)
+add_test(NAME Pouch_HoleyPouchCompactAlex COMMAND $<TARGET_FILE:holey_pouch_compact_alex_test>)

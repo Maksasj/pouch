@@ -7,5 +7,6 @@ include_directories("./")
 
 add_subdirectory(frostweave_bag)
 add_subdirectory(holey_pouch)
+add_subdirectory(holey_pouch_compact)
 
 enable_testing()
