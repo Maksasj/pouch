@@ -6,6 +6,8 @@
 #include <chrono>
 #include <iostream>
 
+#include "test.h"
+
 void testOperation(std::string oparationTime, std::function<void(void)> lambda) {
     using namespace std;
     using namespace chrono;

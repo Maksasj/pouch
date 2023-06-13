@@ -6,7 +6,7 @@
 
 #define _POUCH_FROSTWEAVEBAG_MAX_LOAD_FACTOR_ 0.99
 #define _POUCH_FROSTWEAVEBAG_MIN_LOAD_FACTOR_ 0.4
-#define _POUCH_FROSTWEAVEBAG_DEFAULT_BUCKET_SIZE_ 100
+#define _POUCH_FROSTWEAVEBAG_DEFAULT_BUCKET_SIZE_ 10
 
 namespace pouch {
     template<class _K, class _V>
@@ -39,9 +39,100 @@ namespace pouch {
             inline void _put(const _K& key, const _V& value) noexcept;
             inline void rehash(const u32& newSize) noexcept;
         public:
+            struct iterator {
+                using iterator_category = std::forward_iterator_tag;
+                using difference_type   = std::ptrdiff_t;
+                using value_type        = int;
+                using pointer           = int*;  // or also value_type*
+                using reference         = int&;  // or also value_type&
+
+                const std::pair<_K, _V> operator*() const { return make_pair(_pocket->_key, _pocket->_value); }
+
+                iterator& operator++() { 
+                    if(_pocket != nullptr) {
+                        if(_pocket->_next != nullptr) {
+                            _pocket = _pocket->_next;
+                        } else {
+                            Pocket* p = nullptr;
+                            while(p == nullptr && _bagId < _cont._bagSize) {
+                                p = _cont._data[_bagId];
+                                ++_bagId;
+                            }
+
+                            _pocket = p;
+                        }
+                    }
+
+                    return *this; 
+                }  
+                
+                iterator operator++(int) { 
+                    iterator tmp = *this;
+                    
+                    ++(*this);
+
+                    return tmp; 
+                }
+
+                friend bool operator==(const iterator& a, const iterator& b) { return (a._bagId == b._bagId) && (a._pocket == b._pocket); };
+                friend bool operator!=(const iterator& a, const iterator& b) { return !(a == b); };     
+
+                private:
+                    iterator(FrostWeaveBag<_K, _V>& c, u32 bagId) : _cont(c) {
+                        _bagId = bagId;
+
+                        Pocket* p = nullptr;
+                        while(p == nullptr) {
+                            p = _cont._data[_bagId];
+
+                            if(_bagId >= _cont._bagSize) {
+                                p = nullptr;
+                                break;
+                            }
+
+                            ++_bagId;
+                        }
+
+                        _pocket = p;
+                    }
+
+                    friend class FrostWeaveBag;
+
+                    u32 _bagId;
+                    Pocket* _pocket;
+                
+                    FrostWeaveBag<_K, _V>& _cont;
+            };
+
+            friend struct iterator;
+
+            iterator begin() {
+                return iterator(*this, 0);
+            }
+
+            iterator end() {
+                return iterator(*this, _bagSize);   
+            }
+
             FrostWeaveBag();
             FrostWeaveBag(const u32& bucket_size);
             ~FrostWeaveBag();
+
+            void trace() {
+                Pocket* p = nullptr;
+                for(u32 i = 0; i < _bagSize; ++i) {
+                    p = _data[i];
+
+                    cout << i << ": ";
+
+                    while (p != nullptr) {
+                        cout << p << "(" << p->_value << ") ";
+                        p = p->_next;
+                    }
+
+                    cout << "\n";
+                }
+            }
 
             inline void put(const _K& key, const _V& value) noexcept;
             inline _V* get(const _K& key) const noexcept;
@@ -63,10 +154,14 @@ namespace pouch {
 
     /* Private */
     template<class _K, class _V>
-    FrostWeaveBag<_K, _V>::Pocket::Pocket() {}
+    FrostWeaveBag<_K, _V>::Pocket::Pocket() {
+        _next = nullptr;
+    }
 
     template<class _K, class _V>
-    FrostWeaveBag<_K, _V>::Pocket::Pocket(const Pocket&) {}
+    FrostWeaveBag<_K, _V>::Pocket::Pocket(const Pocket&) {
+        _next = nullptr;
+    }
 
     template<class _K, class _V>
     FrostWeaveBag<_K, _V>::Pocket::Pocket(const _K& key, const _V& value) : _key(key), _value(value), _next(nullptr) {}
@@ -99,12 +194,12 @@ namespace pouch {
         Pocket* current = _data[hashKey];
 
         while (current->_next != nullptr) {
+            current = current->_next;
+
             if(current->_key == key) {
                 current->_value = value;
                 return;
             }
-
-            current = current->_next;
         }
 
         ++_size;
@@ -139,17 +234,19 @@ namespace pouch {
     template<class _K, class _V>
     FrostWeaveBag<_K, _V>::FrostWeaveBag(const u32& bucket_size) : _bagSize(bucket_size), _size(0) {
         _data = new Pocket*[bucket_size];
-        
-        for(u32 i = 0; i < _bagSize; ++i)
-            _data[i] = nullptr;
+
+        for(u64 i = 0; i < _bagSize; ++i) {
+            _data[i] = nullptr; 
+        }
     }
 
     template<class _K, class _V>
     FrostWeaveBag<_K, _V>::FrostWeaveBag() : _bagSize(_POUCH_FROSTWEAVEBAG_DEFAULT_BUCKET_SIZE_), _size(0) {
         _data = new Pocket*[_POUCH_FROSTWEAVEBAG_DEFAULT_BUCKET_SIZE_];
         
-        for(u32 i = 0; i < _bagSize; ++i)
-            _data[i] = nullptr;
+        for(u64 i = 0; i < _bagSize; ++i) {
+            _data[i] = nullptr; 
+        }
     }
 
     template<class _K, class _V>
@@ -162,9 +259,9 @@ namespace pouch {
     inline void FrostWeaveBag<_K, _V>::put(const _K& key, const _V& value) noexcept {
         _put(key, value);
 
-        if(load_factor() > max_load_factor()) {
-            rehash(_bagSize*2);
-        }
+        // if(load_factor() > max_load_factor()) {
+        //     rehash(_bagSize*2);
+        // }
     }
 
     template<class _K, class _V>
@@ -238,9 +335,9 @@ namespace pouch {
             current = current->_next;
         }
 
-        if(_bagSize > 20 && (load_factor() < min_load_factor())) {
-            rehash(_bagSize / 2);
-        }
+        // if(_bagSize > 20 && (load_factor() < min_load_factor())) {
+        //     rehash(_bagSize / 2);
+        // }
     }
 
     template<class _K, class _V>

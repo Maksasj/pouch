@@ -7,8 +7,12 @@ target_link_libraries(frostweave_bag_alex_test pouch)
 add_executable(frostweave_bag_alex_more_test frostweave_bag_alex_more_test.cpp)
 target_link_libraries(frostweave_bag_alex_more_test pouch)
 
+add_executable(frostweave_bag_comparison_test frostweave_bag_comparison_test.cpp)
+target_link_libraries(frostweave_bag_comparison_test pouch)
+
 enable_testing()
 
 add_test(NAME Pouch_FrostweaveBag COMMAND $<TARGET_FILE:frostweave_bag_test>)
 add_test(NAME Pouch_FrostweaveBagAlex COMMAND $<TARGET_FILE:frostweave_bag_alex_test>)
 add_test(NAME Pouch_FrostweaveBagAlexMore COMMAND $<TARGET_FILE:frostweave_bag_alex_more_test>)
+add_test(NAME Pouch_FrostweaveBagComparison COMMAND $<TARGET_FILE:frostweave_bag_comparison_test>)

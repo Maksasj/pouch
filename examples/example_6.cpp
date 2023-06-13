@@ -21,14 +21,5 @@ int main () {
     //     std::cout << arr.get(i) << "\n";
     // }
 
-    RottenSnag<int> a;
-    a.put(8);
-    a.put(4);
-    a.put(1);
-    a.put(12);
-    a.put(10);
-    a.put(15);
-    a.trace();
-
     return 0;
 }

@@ -8,3 +8,7 @@ target_link_libraries(benchmark_1 pouch)
 
 add_executable(benchmark_2 benchmark_2.cpp)
 target_link_libraries(benchmark_2 pouch)
+
+add_executable(benchmark_3 benchmark_3.cpp)
+target_link_libraries(benchmark_3 pouch)
+
