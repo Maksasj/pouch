@@ -1,6 +1,7 @@
 #ifndef _POUCH_FROSTWEAVE_BAG_H_
 #define _POUCH_FROSTWEAVE_BAG_H_
 
+#include <iostream>
 #include <functional>
 #include <memory>
 
@@ -123,14 +124,14 @@ namespace pouch {
                 for(u32 i = 0; i < _bagSize; ++i) {
                     p = _data[i];
 
-                    cout << i << ": ";
+                    std::cout << i << ": ";
 
                     while (p != nullptr) {
-                        cout << p << "(" << p->_value << ") ";
+                        std::cout << p << "(" << p->_value << ") ";
                         p = p->_next;
                     }
 
-                    cout << "\n";
+                    std::cout << "\n";
                 }
             }
 
@@ -259,9 +260,9 @@ namespace pouch {
     inline void FrostWeaveBag<_K, _V>::put(const _K& key, const _V& value) noexcept {
         _put(key, value);
 
-        // if(load_factor() > max_load_factor()) {
-        //     rehash(_bagSize*2);
-        // }
+        if(load_factor() > max_load_factor()) {
+            rehash(_bagSize*2);
+        }
     }
 
     template<class _K, class _V>
@@ -335,9 +336,9 @@ namespace pouch {
             current = current->_next;
         }
 
-        // if(_bagSize > 20 && (load_factor() < min_load_factor())) {
-        //     rehash(_bagSize / 2);
-        // }
+        if(_bagSize > 20 && (load_factor() < min_load_factor())) {
+            rehash(_bagSize / 2);
+        }
     }
 
     template<class _K, class _V>
