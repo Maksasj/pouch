@@ -80,11 +80,13 @@ std::list<int>
 </details>
 
 ## Testing
+For testing this project is using Ctest framework, so probably you need to install cmake :), and as well as with benchmark and building ther is a simple bash scipt, used for building and running ctests.
 ```bash
 test.bat
 ```
 
 ## Benchmark
+There is a `bench.bat` scipt that can be used to compile benchmark test as well as run them. 
 ```bash
 bench.bat
 ```
